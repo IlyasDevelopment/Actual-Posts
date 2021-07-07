@@ -1,0 +1,20 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}" >
+
+<!DOCTYPE html>
+<html>
+<head>
+ <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+ <div id="content">
+   {% block content %}
+   {% endblock %}
+ </div>
+ <div id="sidebar">
+  <h2>World Wild Animals</h2>
+  <p>Have any questions or want to publish something interesting?</p>
+  <p>Don't hesitate to contact us: myemail@yandex.ru</p>
+ </div>
+</body>
+</html>
