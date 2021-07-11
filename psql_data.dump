@@ -1,0 +1,1545 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 13.3
+-- Dumped by pg_dump version 13.3
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.auth_group (
+    id integer NOT NULL,
+    name character varying(150) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO blogsite;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.auth_group_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_id_seq OWNER TO blogsite;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.auth_group_id_seq OWNED BY public.auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.auth_group_permissions (
+    id bigint NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO blogsite;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.auth_group_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO blogsite;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.auth_group_permissions_id_seq OWNED BY public.auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO blogsite;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.auth_permission_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_permission_id_seq OWNER TO blogsite;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.auth_permission_id_seq OWNED BY public.auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(150) NOT NULL,
+    first_name character varying(150) NOT NULL,
+    last_name character varying(150) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.auth_user OWNER TO blogsite;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.auth_user_groups (
+    id bigint NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_groups OWNER TO blogsite;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.auth_user_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_groups_id_seq OWNER TO blogsite;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.auth_user_groups_id_seq OWNED BY public.auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.auth_user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_id_seq OWNER TO blogsite;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.auth_user_id_seq OWNED BY public.auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.auth_user_user_permissions (
+    id bigint NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_user_permissions OWNER TO blogsite;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.auth_user_user_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_user_permissions_id_seq OWNER TO blogsite;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.auth_user_user_permissions_id_seq OWNED BY public.auth_user_user_permissions.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO blogsite;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.django_admin_log_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_admin_log_id_seq OWNER TO blogsite;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.django_admin_log_id_seq OWNED BY public.django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO blogsite;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.django_content_type_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_content_type_id_seq OWNER TO blogsite;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.django_content_type_id_seq OWNED BY public.django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.django_migrations (
+    id bigint NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_migrations OWNER TO blogsite;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.django_migrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_migrations_id_seq OWNER TO blogsite;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.django_migrations_id_seq OWNED BY public.django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO blogsite;
+
+--
+-- Name: django_site; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.django_site (
+    id integer NOT NULL,
+    domain character varying(100) NOT NULL,
+    name character varying(50) NOT NULL
+);
+
+
+ALTER TABLE public.django_site OWNER TO blogsite;
+
+--
+-- Name: django_site_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.django_site_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_site_id_seq OWNER TO blogsite;
+
+--
+-- Name: django_site_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.django_site_id_seq OWNED BY public.django_site.id;
+
+
+--
+-- Name: main_comment; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.main_comment (
+    id bigint NOT NULL,
+    name character varying(80) NOT NULL,
+    email character varying(254) NOT NULL,
+    body text NOT NULL,
+    created timestamp with time zone NOT NULL,
+    updated timestamp with time zone NOT NULL,
+    active boolean NOT NULL,
+    post_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.main_comment OWNER TO blogsite;
+
+--
+-- Name: main_comment_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.main_comment_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.main_comment_id_seq OWNER TO blogsite;
+
+--
+-- Name: main_comment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.main_comment_id_seq OWNED BY public.main_comment.id;
+
+
+--
+-- Name: main_post; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.main_post (
+    id bigint NOT NULL,
+    title character varying(250) NOT NULL,
+    slug character varying(250) NOT NULL,
+    body text NOT NULL,
+    publish timestamp with time zone NOT NULL,
+    created timestamp with time zone NOT NULL,
+    updated timestamp with time zone NOT NULL,
+    status character varying(10) NOT NULL,
+    author_id integer NOT NULL
+);
+
+
+ALTER TABLE public.main_post OWNER TO blogsite;
+
+--
+-- Name: main_post_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.main_post_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.main_post_id_seq OWNER TO blogsite;
+
+--
+-- Name: main_post_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.main_post_id_seq OWNED BY public.main_post.id;
+
+
+--
+-- Name: taggit_tag; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.taggit_tag (
+    id integer NOT NULL,
+    name character varying(100) NOT NULL,
+    slug character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.taggit_tag OWNER TO blogsite;
+
+--
+-- Name: taggit_tag_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.taggit_tag_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.taggit_tag_id_seq OWNER TO blogsite;
+
+--
+-- Name: taggit_tag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.taggit_tag_id_seq OWNED BY public.taggit_tag.id;
+
+
+--
+-- Name: taggit_taggeditem; Type: TABLE; Schema: public; Owner: blogsite
+--
+
+CREATE TABLE public.taggit_taggeditem (
+    id integer NOT NULL,
+    object_id integer NOT NULL,
+    content_type_id integer NOT NULL,
+    tag_id integer NOT NULL
+);
+
+
+ALTER TABLE public.taggit_taggeditem OWNER TO blogsite;
+
+--
+-- Name: taggit_taggeditem_id_seq; Type: SEQUENCE; Schema: public; Owner: blogsite
+--
+
+CREATE SEQUENCE public.taggit_taggeditem_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.taggit_taggeditem_id_seq OWNER TO blogsite;
+
+--
+-- Name: taggit_taggeditem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: blogsite
+--
+
+ALTER SEQUENCE public.taggit_taggeditem_id_seq OWNED BY public.taggit_taggeditem.id;
+
+
+--
+-- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_group ALTER COLUMN id SET DEFAULT nextval('public.auth_group_id_seq'::regclass);
+
+
+--
+-- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_permission ALTER COLUMN id SET DEFAULT nextval('public.auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user ALTER COLUMN id SET DEFAULT nextval('public.auth_user_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user_groups ALTER COLUMN id SET DEFAULT nextval('public.auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_admin_log ALTER COLUMN id SET DEFAULT nextval('public.django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_content_type ALTER COLUMN id SET DEFAULT nextval('public.django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('public.django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: django_site id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_site ALTER COLUMN id SET DEFAULT nextval('public.django_site_id_seq'::regclass);
+
+
+--
+-- Name: main_comment id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.main_comment ALTER COLUMN id SET DEFAULT nextval('public.main_comment_id_seq'::regclass);
+
+
+--
+-- Name: main_post id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.main_post ALTER COLUMN id SET DEFAULT nextval('public.main_post_id_seq'::regclass);
+
+
+--
+-- Name: taggit_tag id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.taggit_tag ALTER COLUMN id SET DEFAULT nextval('public.taggit_tag_id_seq'::regclass);
+
+
+--
+-- Name: taggit_taggeditem id; Type: DEFAULT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.taggit_taggeditem ALTER COLUMN id SET DEFAULT nextval('public.taggit_taggeditem_id_seq'::regclass);
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can view log entry	1	view_logentry
+5	Can add permission	2	add_permission
+6	Can change permission	2	change_permission
+7	Can delete permission	2	delete_permission
+8	Can view permission	2	view_permission
+9	Can add group	3	add_group
+10	Can change group	3	change_group
+11	Can delete group	3	delete_group
+12	Can view group	3	view_group
+13	Can add user	4	add_user
+14	Can change user	4	change_user
+15	Can delete user	4	delete_user
+16	Can view user	4	view_user
+17	Can add content type	5	add_contenttype
+18	Can change content type	5	change_contenttype
+19	Can delete content type	5	delete_contenttype
+20	Can view content type	5	view_contenttype
+21	Can add session	6	add_session
+22	Can change session	6	change_session
+23	Can delete session	6	delete_session
+24	Can view session	6	view_session
+25	Can add post	7	add_post
+26	Can change post	7	change_post
+27	Can delete post	7	delete_post
+28	Can view post	7	view_post
+29	Can add comment	8	add_comment
+30	Can change comment	8	change_comment
+31	Can delete comment	8	delete_comment
+32	Can view comment	8	view_comment
+33	Can add tag	9	add_tag
+34	Can change tag	9	change_tag
+35	Can delete tag	9	delete_tag
+36	Can view tag	9	view_tag
+37	Can add tagged item	10	add_taggeditem
+38	Can change tagged item	10	change_taggeditem
+39	Can delete tagged item	10	delete_taggeditem
+40	Can view tagged item	10	view_taggeditem
+41	Can add site	11	add_site
+42	Can change site	11	change_site
+43	Can delete site	11	delete_site
+44	Can view site	11	view_site
+\.
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+1	pbkdf2_sha256$260000$hdXsIKW7L0RahpLA7EPRsQ$YWnjx/SNRAToh41cg8rYDX/g95aBMN55duGnKPjA+J0=	2021-07-06 13:20:24.388+03	t	admin				t	t	2021-07-06 13:13:55.278+03
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2021-07-06 13:23:48.777+03	1	Post object (1)	1	[{"added": {}}]	7	1
+2	2021-07-06 13:42:09.339+03	1	Post object (1)	2	[{"changed": {"fields": ["Slug"]}}]	7	1
+3	2021-07-06 15:20:47.734+03	1	Post object (1)	2	[{"changed": {"fields": ["Status"]}}]	7	1
+4	2021-07-06 19:48:55.157+03	3	Post object (3)	1	[{"added": {}}]	7	1
+5	2021-07-06 20:29:54.99+03	4	Post object (4)	1	[{"added": {}}]	7	1
+6	2021-07-06 20:31:44.461+03	5	Post object (5)	1	[{"added": {}}]	7	1
+7	2021-07-06 20:32:27.949+03	6	Post object (6)	1	[{"added": {}}]	7	1
+8	2021-07-06 21:18:04.805+03	5	Post object (5)	2	[{"changed": {"fields": ["Title", "Slug", "Body", "Status"]}}]	7	1
+9	2021-07-06 21:19:48.257+03	4	Post object (4)	2	[{"changed": {"fields": ["Title", "Slug", "Body"]}}]	7	1
+10	2021-07-06 21:21:34.807+03	3	Post object (3)	2	[{"changed": {"fields": ["Title", "Slug", "Body"]}}]	7	1
+11	2021-07-06 21:21:43.937+03	5	Post object (5)	2	[{"changed": {"fields": ["Title", "Slug"]}}]	7	1
+12	2021-07-06 21:22:51.552+03	1	Post object (1)	2	[{"changed": {"fields": ["Title", "Slug", "Body"]}}]	7	1
+13	2021-07-06 21:24:35.231+03	6	Post object (6)	2	[{"changed": {"fields": ["Title", "Slug", "Body"]}}]	7	1
+14	2021-07-08 11:01:22.082+03	1	Comment by Fascinating post! on Post object (1)	1	[{"added": {}}]	8	1
+15	2021-07-08 11:05:46.082+03	1	Comment by John on Post object (1)	2	[{"changed": {"fields": ["Name"]}}]	8	1
+16	2021-07-08 11:09:14.885+03	1	Comment by John on Post object (1)	2	[{"changed": {"fields": ["Body"]}}]	8	1
+17	2021-07-08 11:16:25.711+03	3	Comment by g on Post object (1)	3		8	1
+18	2021-07-08 11:16:25.996+03	4	Comment by g on Post object (1)	3		8	1
+19	2021-07-08 11:16:26.185+03	5	Comment by g on Post object (1)	3		8	1
+20	2021-07-08 11:16:26.361+03	6	Comment by g on Post object (1)	3		8	1
+21	2021-07-08 11:52:25.989+03	2	Post object (2)	2	[{"changed": {"fields": ["Tags"]}}]	7	1
+22	2021-07-08 11:55:24.843+03	1	Post object (1)	2	[{"changed": {"fields": ["Tags"]}}]	7	1
+23	2021-07-08 11:55:49.467+03	1	Post object (1)	2	[]	7	1
+24	2021-07-08 11:56:17.553+03	2	django	3		9	1
+25	2021-07-08 11:56:17.602+03	3	jazz	3		9	1
+26	2021-07-08 11:56:17.661+03	1	music	3		9	1
+27	2021-07-08 11:56:31.404+03	3	Post object (3)	2	[{"changed": {"fields": ["Tags"]}}]	7	1
+28	2021-07-08 11:56:43.649+03	4	Post object (4)	2	[{"changed": {"fields": ["Tags"]}}]	7	1
+29	2021-07-08 11:56:48.37+03	6	Post object (6)	2	[{"changed": {"fields": ["Tags"]}}]	7	1
+30	2021-07-08 11:56:54.622+03	5	Post object (5)	2	[{"changed": {"fields": ["Tags"]}}]	7	1
+31	2021-07-09 10:58:39.363+03	7	Post object (7)	1	[{"added": {}}]	7	1
+32	2021-07-09 11:01:34.034+03	1	Post object (1)	2	[{"changed": {"fields": ["Title", "Slug"]}}]	7	1
+33	2021-07-09 11:01:40.103+03	6	Post object (6)	2	[{"changed": {"fields": ["Title", "Slug"]}}]	7	1
+34	2021-07-09 11:01:44.667+03	5	Post object (5)	2	[{"changed": {"fields": ["Title", "Slug"]}}]	7	1
+35	2021-07-09 11:01:50.898+03	3	Post object (3)	2	[{"changed": {"fields": ["Title", "Slug"]}}]	7	1
+36	2021-07-09 11:01:56.785+03	4	Post object (4)	2	[{"changed": {"fields": ["Title", "Slug"]}}]	7	1
+37	2021-07-09 11:08:44.838+03	8	Post object (8)	1	[{"added": {}}]	7	1
+38	2021-07-09 11:22:43.438+03	8	Post object (8)	2	[{"changed": {"fields": ["Tags"]}}]	7	1
+39	2021-07-09 11:26:12.808+03	9	Post object (9)	1	[{"added": {}}]	7	1
+40	2021-07-09 11:30:41.279+03	10	Post object (10)	1	[{"added": {}}]	7	1
+41	2021-07-09 11:32:23.592+03	11	Post object (11)	1	[{"added": {}}]	7	1
+42	2021-07-09 11:37:09.883+03	12	Post object (12)	1	[{"added": {}}]	7	1
+43	2021-07-09 13:54:21.701+03	13	Post object (13)	1	[{"added": {}}]	7	1
+44	2021-07-09 15:30:02.657+03	1	localhost:8000	2	[{"changed": {"fields": ["Domain name"]}}]	11	1
+45	2021-07-09 15:30:58.608+03	1	localhost:8000	2	[{"changed": {"fields": ["Display name"]}}]	11	1
+\.
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.django_content_type (id, app_label, model) FROM stdin;
+1	admin	logentry
+2	auth	permission
+3	auth	group
+4	auth	user
+5	contenttypes	contenttype
+6	sessions	session
+7	main	post
+8	main	comment
+9	taggit	tag
+10	taggit	taggeditem
+11	sites	site
+\.
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2021-07-10 13:01:31.966766+03
+2	auth	0001_initial	2021-07-10 13:01:32.232381+03
+3	admin	0001_initial	2021-07-10 13:01:32.29344+03
+4	admin	0002_logentry_remove_auto_add	2021-07-10 13:01:32.307432+03
+5	admin	0003_logentry_add_action_flag_choices	2021-07-10 13:01:32.321421+03
+6	contenttypes	0002_remove_content_type_name	2021-07-10 13:01:32.357403+03
+7	auth	0002_alter_permission_name_max_length	2021-07-10 13:01:32.376387+03
+8	auth	0003_alter_user_email_max_length	2021-07-10 13:01:32.39138+03
+9	auth	0004_alter_user_username_opts	2021-07-10 13:01:32.41037+03
+10	auth	0005_alter_user_last_login_null	2021-07-10 13:01:32.424358+03
+11	auth	0006_require_contenttypes_0002	2021-07-10 13:01:32.428359+03
+12	auth	0007_alter_validators_add_error_messages	2021-07-10 13:01:32.44235+03
+13	auth	0008_alter_user_username_max_length	2021-07-10 13:01:32.48632+03
+14	auth	0009_alter_user_last_name_max_length	2021-07-10 13:01:32.500312+03
+15	auth	0010_alter_group_name_max_length	2021-07-10 13:01:32.514442+03
+16	auth	0011_update_proxy_permissions	2021-07-10 13:01:32.530072+03
+17	auth	0012_alter_user_first_name_max_length	2021-07-10 13:01:32.545691+03
+18	taggit	0001_initial	2021-07-10 13:01:32.639439+03
+19	taggit	0002_auto_20150616_2121	2021-07-10 13:01:32.655064+03
+20	taggit	0003_taggeditem_add_unique_index	2021-07-10 13:01:32.670688+03
+21	main	0001_initial	2021-07-10 13:01:32.733187+03
+22	main	0002_comment	2021-07-10 13:01:32.795687+03
+23	main	0003_post_tags	2021-07-10 13:01:32.826934+03
+24	sessions	0001_initial	2021-07-10 13:01:32.858182+03
+25	sites	0001_initial	2021-07-10 13:01:32.873808+03
+26	sites	0002_alter_domain_unique	2021-07-10 13:01:32.920679+03
+27	main	0004_alter_post_options	2021-07-10 14:10:30.060356+03
+\.
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+3krfn2g58k04kipx653zybob6gvd6c1g	.eJxVjMsOwiAQRf-FtSGUx6Au3fcbyDADUjWQlHZl_HfbpAvdnnPufYuA61LC2tMcJhZXMYjTL4tIz1R3wQ-s9yap1WWeotwTedgux8bpdTvav4OCvWxrALAajFdnTYmNZccxI1rg7DCyV4ZAs_fZkLEx6jwAqY24iwVy2onPF-J_N8w:1m0iBk:zxsLjpuMQVNg9FiRNWLgCP8QaTtWNlcxTLHJyAjULDQ	2021-07-20 13:20:24.413+03
+\.
+
+
+--
+-- Data for Name: django_site; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.django_site (id, domain, name) FROM stdin;
+1	localhost:8000	localhost:8000
+\.
+
+
+--
+-- Data for Name: main_comment; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.main_comment (id, name, email, body, created, updated, active, post_id) FROM stdin;
+1	John	user@mail.ru	I adore vaquitas!	2021-07-08 11:01:21.923+03	2021-07-08 11:09:14.854+03	t	1
+2	Lesley	lesley@mail.com	Can't believe they are on the edge of extinction(	2021-07-08 11:11:24.1+03	2021-07-08 11:11:24.1+03	t	1
+7	Nick	nick@gmail.com	I didn't know that.	2021-07-09 11:40:53.532+03	2021-07-09 11:40:53.532+03	t	1
+8	Vladimir	volodya@rambler.ru	We should save them.	2021-07-09 11:43:58.928+03	2021-07-09 11:43:58.928+03	t	1
+9	Freya	freya@gmail.com	It's very interesting!	2021-07-09 11:45:09.525+03	2021-07-09 11:45:09.525+03	t	8
+10	Philipp	philipp@gmail.com	Post more articles about quantum computers please. I like it!	2021-07-09 11:46:52.455+03	2021-07-09 11:46:52.455+03	t	8
+11	Elena	elena1995@yandex.ru	UK planes are really good.	2021-07-09 11:50:19.107+03	2021-07-09 11:50:19.107+03	t	10
+\.
+
+
+--
+-- Data for Name: main_post; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.main_post (id, title, slug, body, publish, created, updated, status, author_id) FROM stdin;
+1	Vaquitas	vaquitas	Vaquita, the world's rarest marine mammal, is on the edge of extinction. The plight of cetaceans—whales, dolphins, and porpoises—as a whole is exemplified by the rapid decline of the vaquita in Mexico, with about 10 individuals remaining. This little porpoise wasn't discovered until 1958 and a little over half a century later, we are on the brink of losing them forever. Vaquita are often caught and drowned in gillnets used by illegal fishing operations in marine protected areas within Mexico's Gulf of California. The population has dropped drastically in the last few years.\r\n\r\nThe vaquita has a large dark ring around its eyes and dark patches on its lips that form a thin line from the mouth to the pectoral fins. Its top—the dorsal surface—is dark gray, its sides are pale gray, and its underside—the ventral surface—is white with long, light gray markings. Newborn vaquita have darker coloration and a wide gray fringe of color that runs from the head to the flukes, passing through the dorsal and pectoral fins. They are most often found close to shore in the Gulf's shallow waters, although they quickly swim away if a boat approaches.	2021-07-06 13:23:25+03	2021-07-06 13:23:48.775+03	2021-07-09 11:01:33.726+03	published	1
+2	Another post	another-post	post body.	2021-07-06 13:47:57+03	2021-07-06 13:48:02.146+03	2021-07-08 11:52:25.966+03	draft	1
+3	Tigers	tigers	After a century of decline, overall wild tiger numbers are starting to tick upward. Based on the best available information, tiger populations are stable or increasing in India, Nepal, Bhutan, Russia and China. An estimated 3,900 tigers remain in the wild, but much more work is needed to protect this species if we are to secure its future in the wild. In some areas, including much of Southeast Asia, tigers are still in crisis and declining in number.\r\n\r\nThere are two recognized subspecies of tiger*: the continental (Panthera tigris tigris) and the Sunda (Panthera tigris sondaica). The largest of all the Asian big cats, tigers rely primarily on sight and sound rather than smell for hunting. They typically hunt alone and stalk prey. A tiger can consume more than 80 pounds of meat at one time. On average, tigers give birth to two to four cubs every two years. If all the cubs in one litter die, a second litter may be produced within five months.\r\n\r\nTigers generally gain independence at around two years of age and attain sexual maturity at age three or four for females and four or five years for males. Juvenile mortality is high, however—about half of all cubs do not survive more than two years. Tigers have been known to reach up to 20 years of age in the wild.\r\n\r\nMales of the larger subspecies, the continental tiger, may weigh up to 660 pounds. For males of the smaller subspecies—the Sunda tiger—the upper range is at around 310 pounds. Within both subspecies, males are heavier than females.\r\n\r\nTigers are mostly solitary, apart from associations between mother and offspring. Individual tigers have a large territory, and the size is determined mostly by the availability of prey. Individuals mark their domain with urine, feces, rakes, scrapes, and vocalizing.\r\n\r\nAcross their range, tigers face unrelenting pressures from poaching, retaliatory killings, and habitat loss. They are forced to compete for space with dense and often growing human populations.	2021-07-06 19:48:24+03	2021-07-06 19:48:55.141+03	2021-07-09 11:01:50.869+03	published	1
+4	Amur Leopards	amur-leopards	People usually think of leopards in the savannas of Africa but in the Russian Far East, a rare subspecies has adapted to life in the temperate forests that make up the northern-most part of the species’ range. Similar to other leopards, the Amur leopard can run at speeds of up to 37 miles per hour. This incredible animal has been reported to leap more than 19 feet horizontally and up to 10 feet vertically.\r\n\r\nThe Amur leopard is solitary. Nimble-footed and strong, it carries and hides unfinished kills so that they are not taken by other predators. It has been reported that some males stay with females after mating, and may even help with rearing the young. Several males sometimes follow and fight over a female. They live for 10-15 years, and in captivity up to 20 years. The Amur leopard is also known as the Far East leopard, the Manchurian leopard or the Korean leopard.\r\n\r\nThe Amur leopard is important ecologically, economically and culturally. Conservation of its habitat benefits other species, including Amur tigers and prey species like deer. With the right conservation efforts, we can bring them back and ensure long-term conservation of the region.	2021-07-06 20:26:08+03	2021-07-06 20:29:54.982+03	2021-07-09 11:01:56.514+03	published	1
+5	Elephants	elephants	Once common throughout Africa and Asia, elephant populations have experienced significant declines over the last century. The greatest threat to African elephants is poaching for the illegal ivory trade, while Asian elephant populations are most at risk from habitat loss and resulting human-elephant conflict.\r\n\r\nElephants are the largest land mammals on earth and have distinctly massive bodies, large ears, and long trunks. They use their trunks to pick up objects, trumpet warnings, greet other elephants, or suck up water for drinking or bathing, among other uses. Both male and female African elephants grow tusks and each individual can either be left- or right-tusked, and the one they use more is usually smaller because of wear and tear. Elephant tusks serve many purposes. These extended teeth can be used to protect the elephant's trunk, lift and move objects, gather food, and strip bark from trees. They can also be used for defense. During times of drought, elephants even use their tusks to dig holes to find water underground.\r\n\r\nThe African elephant is the largest of all elephant species and weighs up to eight tons. Two genetically different African subspecies exist: the savanna and the forest elephant, with a number of characteristics that differentiate them both.\r\n\r\nAsian elephants differ in several ways from their African relatives, with more than 10 distinct physical differences between them. For example, Asian elephants are smaller than their African cousins, and their ears are smaller compared to the large fan-shaped ears of the African species. Only some male Asian elephants have tusks, while both male and female African elephants grow tusks.\r\n\r\nLed by a matriarch, elephants are organized into complex social structures of females and calves, while male elephants tend to live in isolation or in small bachelor groups. A single calf is born to a female once every four to five years and after a gestation period of 22 months—the longest of any mammal. Calves are cared for by the entire herd of related females. Female calves may stay with their maternal herd for the rest of their lives, while males leave the herd as they reach puberty.\r\n\r\nElephants need extensive land areas to survive and meet their ecological needs, which includes food, water, and space. On average, an elephant can feed up to 18 hours and consume hundreds of pounds of plant matter in a single day. As a result, as they lose habitat, they often come into conflict with people in competition for resources.	2021-07-06 20:30:09+03	2021-07-06 20:31:44.453+03	2021-07-09 11:01:44.634+03	published	1
+6	Rhinos	rhinos	Rhinos once roamed many places throughout Europe, Asia, and Africa and were known to early Europeans who depicted them in cave paintings. At the beginning of the 20th century, 500,000 rhinos roamed Africa and Asia. By 1970, rhino numbers dropped to 70,000, and today, around 27,000 rhinos remain in the wild. Very few rhinos survive outside national parks and reserves due to persistent poaching and habitat loss over many decades. Three species of rhino—black, Javan, and Sumatran—are critically endangered. Today, a small population of Javan rhinos is found in only one national park on the northern tip of the Indonesian island of Java. A mainland subspecies of the Javan rhino was declared extinct in Vietnam in 2011. Successful conservation efforts have led to an increase in the number of greater one-horned (or Indian) rhinos, from around 200 at the turn of the 20th century to around 3,700 today. The greater one-horned rhino is one of Asia’s biggest success stories, with their status improving from endangered to vulnerable following significant population increases. However, the species still remains under threat from poaching for its horn and from habitat loss and degradation.\r\n\r\nIn Africa, southern white rhinos, once thought to be extinct, now thrive in protected sanctuaries and are classified as near threatened. But the western black rhino and northern white rhinos have recently become extinct in the wild. The only two remaining northern white rhino are kept under 24-hour guard in Ol Pejeta Conservancy in Kenya. Black rhinos have doubled in number over the past two decades from their low point of fewer than 2,500 individuals, but total numbers are still a fraction of the estimated 100,000 that existed in the early part of the 20th century.	2021-07-06 20:32:07+03	2021-07-06 20:32:27.941+03	2021-07-09 11:01:40.044+03	published	1
+7	Computer Vision: Revolutionizing Research	computer-vision-revolutionizing-research	Process Images Faster and Better\r\nAccording to studies, 90% of medical data is image-based. This makes computer vision a perfect fit in understanding more about an illness based on its texture, color, and shape, combined with previous knowledge about the disease.\r\n\r\nBone imaging is needed for identifying the possible occurrence of cancer, infections, arthritis, and dysplasia. A computed tomography (CT) scan is usually done to create a 3D representation of the bones and areas of interest.\r\n\r\nHowever, since a large portion of the bones is made of porous, spongy material, the developed model from X-ray attenuation can be inconclusive. This can be corrected through manual editing, but this is an exhaustingly long process. This not only makes the procedure expensive but also harder for doctors and researchers to gather time-sensitive information.\r\n\r\nWith the help of deep learning and computer vision, it’s possible to produce bone segments from CT scans with speed and accuracy. (Read A Tour of Deep Learning Models.)\r\n\r\nThe resulting image also has better intensity and contrast, making it easier for doctors and researchers to distinguish healthy cells.\r\n\r\nWhile the technology is still being developed and perfected, it will soon be easier to detect brain tumors, cancer cells, and bone defects without having to go through a long and costly process.\r\n\r\nDetecting Motion with High Accuracy\r\nSports biomechanics: the physics of sports. By utilizing the benefits of computer vision, data for studying sports biomechanics becomes more detailed and is easier to obtain.\r\n\r\nSecond Spectrum, which is the official partner of the NBA responsible for analyzing sports data, uses a combination of machine learning, big data, and computer vision. Using these processes, they were able to deconstruct the aspects of rebounding including the most frequent rebound location, the average rebound height, the rebound success rate, and the shot locations relative to the completion of an offensive or defensive rebound.\r\n\r\nThere’s also a study about detecting swimming strokes from beginning to end. With the help of computer vision and machine learning, researchers were able to conduct discrete event detection and locate the exact frame when the swim stroke starts and ends. This study can help athletes improve the timing and span of their strokes in order to maximize speed and minimize drag.\r\n\r\nGait analysis can also be conducted in conjunction with motion capture to study locomotion and muscle activity. With the help of cameras and computer vision, it becomes easier to calculate trajectory, deduce movement patterns, and measure muscle activity in three dimensions.\r\n\r\nCounting with Machines Instead of Humans\r\nHuman beings count many things, from stars in galaxies, to icebergs in the ocean, to cells under a microscope. Counting absorbs many man-hours of labor but can be done much more efficiently by a computer vision system trained by machine learning. (Read Job Role: Machine Learning Engineer.)\r\n\r\nCell counting is an age-old scientific practice. The hemocytometer was invented in the 19th century France was developed to make counting easier, and although a piece of glass etched with grids could allow a doctor to determine that a patient has a low red cell count, contemporary science has an exploding need for faster methods.\r\n\r\nBy using machine learning to teach a neural network to identify cell nuclei, computer vision systems can count cells in seconds instead of minutes — radically increasing the throughput of research labs.\r\n\r\nAnalyzing Food and Crops for Quality and Safety\r\nComputer vision also has its benefits in the agricultural sector. Due to the growing concern over food safety, the food industry is focusing on the development of a fast and reliable system to evaluate food quality. Manufacturers are looking for methods that will enable them to rapidly assess food quality and safety in real-time during the production and processing cycles.\r\n\r\nComputer vision is one of the solutions researchers are eyeing because of its non-destructive assessment approach. It can quickly evaluate food quality based on the color, size, shape, and defects, and assign an appropriate grade to it. Japan currently has a machine that does exactly this, but only for specific products.\r\n\r\nDrones with computer vision can also help farmers monitor crop growth. The aerial view allows them to see which portions are growing well, which have signs of infestation, and which have been damaged by environmental factors. The computer can also evaluate soil types and weather conditions to come up with the best solution to optimize fertilization and arrange planting schedules.\r\n\r\nWhat We've Learned\r\nThe possibilities of applying computer vision in various ways for scientific research are virtually endless. The technology is still in its early phases and only a number of organizations have realized its advantages, so your business can be at the forefront of a new revolution.\r\n\r\nWhether you’re conducting R&D, or you want to maximize business security and production efficiency, computer vision is a technology to be increasingly considered in the space.	2021-07-09 10:57:34+03	2021-07-09 10:58:39.109+03	2021-07-09 10:58:39.11+03	published	1
+8	Scientists Come One Step Further in Creating Quantum Computers	scientists-come-one-step-further-in-creating-quantum-computers	The world of technology has got one step closer to creating quantum computers.  Dutch scientists have recently created a 2-qubit (quantum bit)  processor running on a silicon chip.\r\n\r\nWhile standard computers work with bits of information that can have only two states, 0 or 1, quantum processors are based on the fact that bits can exist in both states at the same time. As a result, they have tremendous computing power and can do things that no classical computer can do. Quantum computers can be used for solving complex problems and can manage much larger number of calculations at once.\r\n\r\nScientists explain that they are still in the early stages of developing a real quantum processor. Hardware manufacturer IBM has already built a 50-qubit computer, but with superconductive materials that need extreme cooling. Putting a quantum processor on a silicon chip, which is already used in the computer industry, may be the first step toward mass production.\r\n\r\n\r\nIn such quantum processors, electrons can be in many states at once. This is called superposition. In the lab, scientists have managed to keep electrons between both positions at the same time, however, such electrons are not stable and quickly fall apart. By linking these electrons together on a silicon chip qubit hardware manufacturers could produce quantum processors for commercial use.	2021-07-09 11:07:40+03	2021-07-09 11:08:44.529+03	2021-07-09 11:22:43.331+03	published	1
+9	Mobile Phones are Changing Peoples’ Lives in Africa	mobile-phones-are-changing-peoples-lives-in-africa	Mobile phones have been changing the lives of Africans all over the continent more than any other invention before. There are more people using mobile phones in Africa than in Europe and America combined. In fact, mobile phones are growing fast on the whole continent, especially in regions south of the Sahara desert. Today there are 600 million mobile phone users in Africa. By 2016 the number will be close to a billion.\r\nMobile phones provide a wide variety of services that citizens, especially in rural areas wouldn’t have.  They offer education in places where it is hard to get. Mobile phones are used for farming projects, where farmers can get information on crop prices. Health websites tell villagers what to do in case of emergencies when no doctor is available or faraway.  People even use mobile phones for entertainment in areas where there is no TV. Mobile banking has become widespread across Africa because many Africans don’t have their own bank account. Over 60 million use mobiles to transfer and receive money quickly and at a low cost. Mobile phones are helping people set up businesses and make money, thus raising the continent’s overall income. Through mobile phones more people in Africa have access to the internet than to clean water or sanitation.\r\n\r\n\r\nIn the last ten years the number of mobile phone users in Africa has increased greatly. While in the early days people focused on sending messages and talking to relatives, the internet is the main service that is used today. It has become an absolute necessity and in many places has replaced the desktop PC. In Nigeria, for example, there are more mobile phone users than PC-Internet users. Especially Kenya is strongly connected to mobile phones. The country is also called Silicon Savanna because 92 % of all Kenyans go online through mobiles.\r\n\r\nWhile most people are buying cheap, low-end phones, smartphones with internet access are becoming popular too. For phone makers Africa is the market of the future. Blackberry, for example, are stagnating in Europe and the USA but making a lot of profit in Third World countries.\r\nMany Africans can remember the days when life without phone communication was extremely difficult. People in remote villages had to travel many kilometres to a cybercafé in order to access the Internet. As there were only few landline connections, ill people often died because they couldn’t get medical help fast enough. Today, Africa is the first continent to have more mobile phone than landline connections.\r\nThe United Nations are stepping up efforts to provide even more help. The UN’s educational and cultural organisation UNESCO is helping Africans use mobile phones by holding conferences on how the device can increase the number of Africans who can read. It also offers help on how mobile phones can be used in classrooms. Teachers are shown how to teach with mobiles and provide knowledge to the poor.	2021-07-09 11:24:54+03	2021-07-09 11:26:12.768+03	2021-07-09 11:26:12.768+03	published	1
+10	2017 Safest Year in Air Travel	2017-safest-year-in-air-travel	According to world aviation officials, 2017 was recorded as the safest year in air travel.  There were no deaths caused by commercial plane crashes last year.\r\n\r\nHowever, the total number of people killed on civilian aircraft and cargo planes has increased slightly. The deadliest incident occurred in January 2017 when a Turkish cargo jet crashed into a village in rural Kyrgyzstan as it tried to land in foggyweather. All four crew members and 35  people on the ground were killed.\r\n\r\nOver the past 20 years, fatalities caused by commercial jetliners have sunken steadily. In 2005, for example, over a thousand people were killed on board commercial flights.\r\n\r\nAir travel has become very safe. It is estimated that the accident rate is at 0.06 per one million flights or one fatal accident every 16 million flights.\r\n\r\nAccording to flight experts, chances are that the zero death toll on commercial airlines will not be repeated. Because there are over 37 million flights every year, some kind of accident involving the death of passengers is bound to happen in the near future.\r\n\r\n\r\nThe decline in passenger deaths is due to increased safety measures by the airline industry. Airplanes are becoming more robust and airlines tend to buy newer, more modern aircraft. But aviation officials are worried about the risk of in-flight fires caused by an increase in lithium-ion batteries that are being brought on board, mostly through smartphones and notebooks.\r\n\r\nAmong the world's largest countries, the UK has the best air-safety record .  Since the end of the 1980s, there has been no fatal accident involving a British plane. In contrast, African countries have the worst safety records.	2021-07-09 11:28:36+03	2021-07-09 11:30:41.259+03	2021-07-09 11:30:41.259+03	published	1
+11	Ozone Layer Over Antarctica Is Slowly Recovering	ozone-layer-over-antarctica-is-slowly-recovering	According to the American space agency  NASA, the world's ozone layer is slowly recovering. A report states that, for the first time,  scientists have observed a decrease in the amount of chlorine in the ozone layer over Antarctica.\r\n\r\nOzone in the atmosphere is essential because it protects life on our planet by absorbing dangerous ultraviolet radiation, which causes skin cancer and damages plant life. Is the 1980s, scientists discovered a hole in the ozone layer, which has become larger ever since.  It is especially large over the Antarctic continent and Australia.\r\n\r\nShortly after the discovery, an international agreement, the Montreal Protocol, was signed, banning the use of substances that are responsible for the destruction of the ozone layer. It limits the use of CFCs, chemical compounds that rise into the upper layers of the atmosphere where they are broken down by the sun's ultraviolet light. In the process, chlorine is released which destroys the ozone molecules.\r\n\r\nSince the ban has taken effect major companies have started looking for alternatives to CFCs.\r\n\r\nChanges in the ozone level are usually measured during the Antarctic winter, between July and September, when temperatures are lower and results are more accurate. Since 2005, there has been a 20% rise in the amount of ozone. Even though it is the first time that the hole in the ozone layer has become smaller it will take decades to recover completely.\r\n\r\n \r\nEnvironmentalists around the world have welcomed the announcement, stating that we can actually save the environment by acting decisively.	2021-07-09 11:31:04+03	2021-07-09 11:32:23.58+03	2021-07-09 11:32:23.58+03	published	1
+12	Global Warming	global-warming	Scientists made an alarming discovery in the 1980s. They found out that the average temperature of the Earth's surface was slowly rising. This trend is called global warming. Today we know that global warming is increasing because more and more gases get into the atmosphere.\r\n\r\n \r\nGreenhouse effect\r\nA greenhouse is a glass house in which plants grow. The glass lets light in and at the same time keeps heat from getting out. This heat keeps the plants warm, even when it is cold outside. The same happens to the Earth's atmosphere. It lets sunlight in and keeps carbon dioxide and other gases from getting out. We need these gases but too much of them trap more heat.\r\n\r\n\r\nCauses of Global Warming\r\nFor a long time people on our Earth didn't think a lot about greenhouse gases. The situation changed when people started using more and more energy in the form of fossil fuels, like oil, gas and coal. We burn fossil fuels to power factories, run cars, produce electricity and heat houses. As fossil fuels burn they let carbon dioxide into the atmosphere.\r\n\r\nDuring the last few decades people have also cut down many forests. Trees use carbon dioxide when they make their own food. Fewer trees mean that less carbon dioxide is taken out of the atmosphere.\r\n\r\nPossible effects of global warming\r\n \r\n\r\nScientists have different opinions on how warm the Earth's surface will really get. The increase may be between 1.5°C and 6°C by the year 2100. Warmer weather will make ice caps and glaciers melt. Sea levels could rise dramatically. Plants, animals and people living in coastal areas all could be in danger. The weather may change in many areas of the world. Floods, droughts and damaging storms could be the result.\r\n\r\nPeople in colder regions might welcome warmer weather but those who live in regions that are already hot may suffer from new diseases. At the same time some animals may not survive because they cannot adapt to the new environment. They could move to other places in order to live there.\r\n\r\n \r\n\r\nReducing global warming\r\nFinding a solution to solve the world's biggest environmental problem is not an easy task. Although we need energy to make our economy grow there are things that could be done to fight off this problem. Carpools or travelling by public transport could take many cars off the roads. You could turn off lights, TV sets, computers and other electrical items if you don't need them. Companies have been spending a lot of money to produce items that use little energy.\r\n\r\nWe also need to use more alternative energy, like sunlight, wind power or wave power. Car companies have started to produce a new type of cars known as hybrids. It works like an electric car but also has a small petrol engine.\r\n\r\n\r\nThe Kyoto Protocol\r\nIn 1997 over 150 countries signed the Kyoto Protocol at the United Nations Climate Conference. Industrialized countries should reduce their emissions of greenhouse gases. The United States which produces about 25 % of all greenhouse gases has often made public that it will not support the agreement.	2021-07-09 11:35:54+03	2021-07-09 11:37:09.87+03	2021-07-09 11:37:09.87+03	published	1
+13	Markdown Post	markdown-post	This is a post formatted with markdown\r\n--------------------------------------\r\n*This is emphasized* and **this is more emphasized**.\r\nHere is a list:\r\n* One\r\n* Two\r\n* Three\r\nAnd a [link to the Django website](https://www.djangoproject.com/)	2021-07-09 13:53:39+03	2021-07-09 13:54:21.677+03	2021-07-09 13:54:21.677+03	published	1
+\.
+
+
+--
+-- Data for Name: taggit_tag; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.taggit_tag (id, name, slug) FROM stdin;
+4	Wild animals	wild-animals
+5	WWF	wwf
+6	Wild Animals	wild-animals_1
+7	Technologies	technologies
+8	Computer Vision	computer-vision
+9	Techologies	techologies
+10	Quantum Computers	quantum-computers
+11	Mobile Phones	mobile-phones
+12	Travels	travels
+13	Records	records
+14	Environment	environment
+15	Tests	tests
+\.
+
+
+--
+-- Data for Name: taggit_taggeditem; Type: TABLE DATA; Schema: public; Owner: blogsite
+--
+
+COPY public.taggit_taggeditem (id, object_id, content_type_id, tag_id) FROM stdin;
+4	2	7	4
+5	2	7	5
+6	1	7	5
+7	1	7	6
+8	3	7	5
+9	3	7	6
+10	4	7	5
+11	4	7	6
+12	6	7	5
+13	6	7	6
+14	5	7	5
+15	5	7	6
+16	7	7	8
+17	7	7	7
+19	8	7	10
+20	8	7	7
+21	9	7	11
+22	9	7	7
+23	10	7	12
+24	10	7	13
+25	11	7	14
+26	12	7	14
+27	13	7	15
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.auth_group_id_seq', 1, false);
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 44, true);
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 1, false);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.auth_user_id_seq', 1, true);
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 45, true);
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 11, true);
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 27, true);
+
+
+--
+-- Name: django_site_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
+
+
+--
+-- Name: main_comment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.main_comment_id_seq', 11, true);
+
+
+--
+-- Name: main_post_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.main_post_id_seq', 13, true);
+
+
+--
+-- Name: taggit_tag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.taggit_tag_id_seq', 15, true);
+
+
+--
+-- Name: taggit_taggeditem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: blogsite
+--
+
+SELECT pg_catalog.setval('public.taggit_taggeditem_id_seq', 27, true);
+
+
+--
+-- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_94350c0c_uniq UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_14a6b632_uniq UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: django_site django_site_domain_a2e37b91_uniq; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_site
+    ADD CONSTRAINT django_site_domain_a2e37b91_uniq UNIQUE (domain);
+
+
+--
+-- Name: django_site django_site_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_site
+    ADD CONSTRAINT django_site_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: main_comment main_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.main_comment
+    ADD CONSTRAINT main_comment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: main_post main_post_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.main_post
+    ADD CONSTRAINT main_post_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: taggit_tag taggit_tag_name_key; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.taggit_tag
+    ADD CONSTRAINT taggit_tag_name_key UNIQUE (name);
+
+
+--
+-- Name: taggit_tag taggit_tag_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.taggit_tag
+    ADD CONSTRAINT taggit_tag_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: taggit_tag taggit_tag_slug_key; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.taggit_tag
+    ADD CONSTRAINT taggit_tag_slug_key UNIQUE (slug);
+
+
+--
+-- Name: taggit_taggeditem taggit_taggeditem_content_type_id_object_i_4bb97a8e_uniq; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.taggit_taggeditem
+    ADD CONSTRAINT taggit_taggeditem_content_type_id_object_i_4bb97a8e_uniq UNIQUE (content_type_id, object_id, tag_id);
+
+
+--
+-- Name: taggit_taggeditem taggit_taggeditem_pkey; Type: CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.taggit_taggeditem
+    ADD CONSTRAINT taggit_taggeditem_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX auth_group_name_a6ea08ec_like ON public.auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_group_id_b120cbf9; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON public.auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_permission_id_84c5c92e; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON public.auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_content_type_id_2f476e4b; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX auth_permission_content_type_id_2f476e4b ON public.auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_group_id_97559544; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX auth_user_groups_group_id_97559544 ON public.auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_user_id_6a12ed8b; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX auth_user_groups_user_id_6a12ed8b ON public.auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_permission_id_1fbb5f2c; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX auth_user_user_permissions_permission_id_1fbb5f2c ON public.auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_a95ead1b; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX auth_user_user_permissions_user_id_a95ead1b ON public.auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_user_username_6821ab7c_like; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX auth_user_username_6821ab7c_like ON public.auth_user USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: django_admin_log_content_type_id_c4bce8eb; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON public.django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_user_id_c564eba6; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX django_admin_log_user_id_c564eba6 ON public.django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_expire_date_a5c62663; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX django_session_expire_date_a5c62663 ON public.django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_c0390e0f_like; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX django_session_session_key_c0390e0f_like ON public.django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: django_site_domain_a2e37b91_like; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX django_site_domain_a2e37b91_like ON public.django_site USING btree (domain varchar_pattern_ops);
+
+
+--
+-- Name: main_comment_post_id_8158f528; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX main_comment_post_id_8158f528 ON public.main_comment USING btree (post_id);
+
+
+--
+-- Name: main_post_author_id_b6fbb16a; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX main_post_author_id_b6fbb16a ON public.main_post USING btree (author_id);
+
+
+--
+-- Name: main_post_slug_c8e86538; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX main_post_slug_c8e86538 ON public.main_post USING btree (slug);
+
+
+--
+-- Name: main_post_slug_c8e86538_like; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX main_post_slug_c8e86538_like ON public.main_post USING btree (slug varchar_pattern_ops);
+
+
+--
+-- Name: taggit_tag_name_58eb2ed9_like; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX taggit_tag_name_58eb2ed9_like ON public.taggit_tag USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: taggit_tag_slug_6be58b2c_like; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX taggit_tag_slug_6be58b2c_like ON public.taggit_tag USING btree (slug varchar_pattern_ops);
+
+
+--
+-- Name: taggit_taggeditem_content_type_id_9957a03c; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX taggit_taggeditem_content_type_id_9957a03c ON public.taggit_taggeditem USING btree (content_type_id);
+
+
+--
+-- Name: taggit_taggeditem_content_type_id_object_id_196cc965_idx; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX taggit_taggeditem_content_type_id_object_id_196cc965_idx ON public.taggit_taggeditem USING btree (content_type_id, object_id);
+
+
+--
+-- Name: taggit_taggeditem_object_id_e2d7d1df; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX taggit_taggeditem_object_id_e2d7d1df ON public.taggit_taggeditem USING btree (object_id);
+
+
+--
+-- Name: taggit_taggeditem_tag_id_f4f5b767; Type: INDEX; Schema: public; Owner: blogsite
+--
+
+CREATE INDEX taggit_taggeditem_tag_id_f4f5b767 ON public.taggit_taggeditem USING btree (tag_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: main_comment main_comment_post_id_8158f528_fk_main_post_id; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.main_comment
+    ADD CONSTRAINT main_comment_post_id_8158f528_fk_main_post_id FOREIGN KEY (post_id) REFERENCES public.main_post(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: main_post main_post_author_id_b6fbb16a_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.main_post
+    ADD CONSTRAINT main_post_author_id_b6fbb16a_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: taggit_taggeditem taggit_taggeditem_content_type_id_9957a03c_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.taggit_taggeditem
+    ADD CONSTRAINT taggit_taggeditem_content_type_id_9957a03c_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: taggit_taggeditem taggit_taggeditem_tag_id_f4f5b767_fk_taggit_tag_id; Type: FK CONSTRAINT; Schema: public; Owner: blogsite
+--
+
+ALTER TABLE ONLY public.taggit_taggeditem
+    ADD CONSTRAINT taggit_taggeditem_tag_id_f4f5b767_fk_taggit_tag_id FOREIGN KEY (tag_id) REFERENCES public.taggit_tag(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

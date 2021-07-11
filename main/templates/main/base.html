@@ -1,5 +1,6 @@
+{% load main_tags %}
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}" >
+<link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">
 
 <!DOCTYPE html>
 <html>
@@ -10,16 +11,36 @@
  <div id="content">
   <h1>
    <a href="{% url 'main:post_list' %}">
-    Actual Articles
+    Actual Posts
    </a>
   </h1>
   {% block content %}
   {% endblock %}
  </div>
  <div id="sidebar">
-  <h2>AA</h2>
+  <h2>AP</h2>
+  <p>Welcome to our site. We've made {% total_posts %} posts so far.</p>
+  <p>
+   <a href="{% url 'main:post_feed' %}">Subscribe to my RSS feed</a>
+  </p>
   <p>Have any questions or want to publish something interesting?</p>
   <p>Don't hesitate to contact us: myemail@yandex.ru</p>
+  <h3>Latest posts</h3>
+  {% show_latest_posts 3 %}
+  <h3>Most commented posts</h3>
+  {% get_most_commented_posts as most_commented_posts %}
+  <ul>
+   {% for post in most_commented_posts %}
+   <li>
+    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+   </li>
+   {% endfor %}
+  </ul>
+  <h2>
+   <p>
+    <a href="{% url 'main:post_search' %}">Looking for a particular post?</a>
+   </p>
+  </h2>
  </div>
 </body>
 </html>

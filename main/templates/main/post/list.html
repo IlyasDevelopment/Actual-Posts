@@ -1,21 +1,23 @@
 {% extends "main/base.html" %}
+{% load main_tags %}
 
-{% block title %}Actual Articles{% endblock %}
+{% block title %}Actual Posts{% endblock %}
 
 {% block content %}
 {% if tag %}
-  <h1>Posts tagged with "{{ tag.name }}"</h1>
+  <h2>Posts tagged with "{{ tag.name }}"</h2>
 {% endif %}
    {% for post in posts %}
-     <h2>
+     <h3>
        <a href="{{ post.get_absolute_url }}">
           {{ post.title }}
        </a>
-     </h2>
+     </h3>
      <p class="date">
        Published {{ post.publish }} by {{ post.author }}
      </p>
-     {{ post.body|truncatewords:30|linebreaks }}
+     <!-- {{ post.body|truncatewords:30|linebreaks }} -->
+      {{ post.body|markdown|truncatewords_html:30 }}
    <!-- <p class="tags">Tags: {{ post.tags.all|join:", " }}</p> -->
     <p class="tags">
         Tags:
