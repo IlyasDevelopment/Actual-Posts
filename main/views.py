@@ -61,6 +61,8 @@ def post_detail(request, year, month, day, post):
             new_comment.post = post
             # save the comment to the database
             new_comment.save()
+            # clear the form
+            comment_form = CommentForm()
     else:
         comment_form = CommentForm()
     # list of similar posts
